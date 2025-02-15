@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  padding: 0;
+  margin: 0;
+
+  color: #0f0f0f;
+  background-color: #f6f6f6;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.bg-main {
+  background-color: #ff5152;
+}
+
+.text-main {
+  color: #ff5152;
+}
+
+.bg-second {
+  background-color: #200e32;
+}
+
+.text-second {
+  color: #200e32;
+}
+
+
+
+input::placeholder {
+  
+  transform: translateY(1.9px);
+}
+input::content{
+  transform: translateY(1.9px);
+}
+
+input:focus{
+  border-color: #200e32;
+}
+
+.bg {
+  background-image: url(./assets/bg.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 165%;
+  height: 100dvh;
+}
+.bg2 {
+  background-image: url(./assets/bg.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 120%;
+}
+
+.input {
+  @apply px-2 py-3 outline-none mb-2 rounded-xl border-[1px] border-gray-600;
+}
+
+.input:focus {
+  border-color: #ff5152;
+}
+
+.input:focus::placeholder {
+  color: #ff5152;
+}
+
+.logInBox {
+  animation-name: box;
+  animation-duration: 0.4s;
+  animation-delay: 2s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+@keyframes box {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+  border: 4px solid #0000;
+  border-radius: 50%;
+  border-right-color: #ff5152;
+  animation: l15 1s infinite linear;
+}
+.loader::before,
+.loader::after {    
+  content: "";
+  grid-area: 1/1;
+  margin: 2px;
+  border: inherit;
+  border-radius: 50%;
+  animation: l15 2s infinite;
+}
+.loader::after {
+  margin: 8px;
+  animation-duration: 3s;
+}
+@keyframes l15{ 
+  100%{transform: rotate(1turn)}
+}
+
+
+
