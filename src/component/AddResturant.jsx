@@ -6,19 +6,23 @@ import def from "../assets/defImg.svg";
 import { MapPin } from "lucide-react";
 import { Phone } from "lucide-react";
 import { LockKeyholeOpen } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-const apiLink = import.meta.env.VITE_API_LINK
-
-
-
+import Swal from "sweetalert2";
+const apiLink = import.meta.env.VITE_API_LINK;
 
 function AddResturant() {
-  const { handleClosePopUp, togleShowPassword, resturent, hadnleChangeResturant } = useContext(AppContext);
+  const {
+    handleClosePopUp,
+    togleShowPassword,
+    resturent,
+    hadnleChangeResturant,
+  } = useContext(AppContext);
   const [file, setfile] = useState(null);
   const [url, seturl] = useState(null);
   const passRef = useRef();
   const [show, setshow] = useState(false);
+  const clientQueries = useQueryClient();
 
   function HandleDrop(e) {
     e.preventDefault();
@@ -44,20 +48,26 @@ function AddResturant() {
     }
   }, [file]);
 
-
   const AddProductMutation = useMutation({
-    mutationKey : ["addProduct"],
-    mutationFn : async () => {
-      const res = await axios.post( `${apiLink}/restaurant` , resturent)
-      return res.data
+    mutationKey: ["addProduct"],
+    mutationFn: async () => {
+      const res = await axios.post(`${apiLink}/restaurant`, resturent);
+      return res.data;
     },
-    onSuccess : () => {
+    onSuccess: () => {
+      clientQueries.invalidateQueries(["resturants"]);
       handleClosePopUp();
-    }
-  })
+      Swal.fire({
+        title: "Resturant crée avec succes",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    },
+  });
 
-  function handleSubmit(e){
-    e.preventDefault()
+  function handleSubmit(e) {
+    e.preventDefault();
     AddProductMutation.mutate();
   }
 
@@ -65,13 +75,16 @@ function AddResturant() {
     <div className="w-[70%] flex flex-col items-center justify-center relative bg-white rounded-2xl h-fit py-6 ">
       <div className="w-full pb-12 pt-3 flex justify-between items-center px-10 ">
         <h2 className="text-2xl text-main ">Ajouter un resturant</h2>
-        <X size={34} onClick={() => handleClosePopUp()} className="text-main cursor-pointer " />
+        <X
+          size={34}
+          onClick={() => handleClosePopUp()}
+          className="text-main cursor-pointer "
+        />
       </div>
       <form
         onSubmit={(e) => handleSubmit(e)}
         className="flex px-16 h-fit flex-col items-center gap-4 w-full "
       >
-        
         {/* <label
           htmlFor="file"
           onDrop={(e) => HandleDrop(e)}
@@ -177,7 +190,9 @@ function AddResturant() {
           <button
             type="submit"
             disabled={AddProductMutation.isPending}
-            className={`py-[12px] ${AddProductMutation.isPending ? "bg-gray-400" : "bg-main"} w-full rounded-2xl cursor-pointer h-fit  text-white px-8`}
+            className={`py-[12px] ${
+              AddProductMutation.isPending ? "bg-gray-400" : "bg-main"
+            } w-full rounded-2xl cursor-pointer h-fit  text-white px-8`}
           >
             Add
           </button>

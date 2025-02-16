@@ -10,7 +10,7 @@ function Select() {
   return <div className=" w-full flex gap-4 min-h-24 rounded-2xl">
     <SelectCard link="/resturant" title="Les resturants" img={img1} />
     <SelectCard link="/livreur" title="Les Livreurs" img={img2} />
-    <SelectCard link="/university" title="Les Univérsites" img={img3} />
+    {/* <SelectCard link="/university" title="Les Univérsites" img={img3} /> */}
     <SelectCard link="/products" title="Les Prouduits" img={img4} />
     <SelectCard link="/news" title="Les Nauveautés" img={img5} />
   </div>;

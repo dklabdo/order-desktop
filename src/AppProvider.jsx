@@ -9,10 +9,9 @@ function AppProvider({ children }) {
   const [product, setproduct] = useState({
     productName: "",
     description: "",
-    point: 0,
-    parice : "",
-    image: "",
+    price : null,
   });
+
 
   
 

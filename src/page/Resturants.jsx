@@ -7,10 +7,11 @@ import NavBar from "../component/NavBar";
 import { Plus } from "lucide-react";
 import Select from "../component/Select";
 import { Search } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import def from "../assets/def.jpg";
 import Loader from "../component/Loader";
+import Swal from "sweetalert2";
 const apiLink = import.meta.env.VITE_API_LINK;
 
 function Resturants() {
@@ -45,6 +46,7 @@ function Resturants() {
 
       <div className="w-full h-full flex flex-col  p-5 ">
         <Select />
+
         <div className="w-full pt-2  flex items-center justify-between ">
           <div className="flex  -space-x-[33px] ml-3 group w-[35%] items-center  ">
             <Search
@@ -67,7 +69,7 @@ function Resturants() {
           </div>
         </div>
         <div className="py-6 px-4 pb-28 overflow-y-auto flex flex-col gap-3">
-          {resturantQuery.isLoading && <Loader/>}
+          {resturantQuery.isLoading && <Loader />}
           {resturantQuery.isError && <p>Error ...</p>}
           {!resturantQuery.isError &&
             !resturantQuery.isLoading &&
@@ -95,19 +97,60 @@ function ParamSection() {
 
 function Resturant({ id, img, total, name, email, banned }) {
   const navigate = useNavigate();
+  const queries = useQueryClient();
+  const deleteResturant = useMutation({
+    mutationKey: ["deleteRes"],
+    mutationFn: async () => {
+      console.log(`${apiLink}/restaurant/${id}`);
+      const res = await axios.delete(`${apiLink}/restaurant/${id}`);
+      console.log(res.data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queries.invalidateQueries(["resturants"]);
+    },
+  });
+
+  function handleDelete() {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this resturant",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        queries.invalidateQueries(["resturants"]);
+        Swal.fire({
+          title: "Deleted!",
+          text: "This resturant has been deleted.",
+          icon: "success",
+        });
+      }
+    });
+  }
 
   return (
-    <div
-      onClick={() => navigate(`/command/${id}`)}
-      className="flex px-5 cursor-pointer hover:bg-[#200E32] hover:text-white justify-between rounded-2xl items-center bg-gray-100 p-4 "
-    >
-      <div className="w-14 bg-gray-200 h-14 rounded-full">
-        <img className="rounded-3xl" src={def} />
+    <div className="flex px-6 cursor-pointer hover:bg-[#200E32] hover:text-white justify-between rounded-2xl items-center bg-gray-100  ">
+      <div
+        onClick={() => navigate(`/command/${id}`)}
+        className="flex  h-full py-5 justify-between w-full items-center "
+      >
+        <div className="w-14 bg-gray-200 h-14 rounded-full">
+          <img className="rounded-3xl" src={def} />
+        </div>
+        <p className="w-[20%] "> {name} </p>
+        <p className="w-[20%] "> {email} </p>
+        <p className="w-[20%] "> {total}DA </p>
       </div>
-      <p className="w-[20%] "> {name} </p>
-      <p className="w-[20%] "> {email} </p>
-      <p className="w-[20%] "> {total}DA </p>
-      <button className="bg-main py-2 px-4 text-white rounded-2xl">Bann</button>
+      {/* <button
+        onClick={() => handleDelete()}
+        className="bg-main cursor-pointer z-20 py-2 px-4 text-white rounded-2xl"
+      >
+        Suprimer
+      </button> */}
 
       {/* <ShieldCKheck /> */}
     </div>

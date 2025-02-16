@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../AppProvider";
 import {
   useMutation,
@@ -9,12 +9,15 @@ import {
 } from "@tanstack/react-query";
 import axios from "axios";
 import { Trash } from "lucide-react";
+import Swal from "sweetalert2";
 
 const apiLink = import.meta.env.VITE_API_LINK;
 
 function AddSuplement() {
   const { handleClosePopUp, currentRes } = useContext(AppContext);
   const clientQuery = useQueryClient();
+  const supArr = currentRes.SupplementId.reverse();
+
   function addSuplement(e) {
     e.preventDefault();
     addSuplementMutation.mutate({
@@ -22,6 +25,12 @@ function AddSuplement() {
       price: e.target[1].value,
     });
   }
+
+  // useEffect(() => {
+  //   if (divRef.current) {
+  //     divRef.current.scrollTop = 200;
+  //   }
+  // }, []);
 
   const addSuplementMutation = useMutation({
     mutationKey: ["addSuplement"],
@@ -34,6 +43,14 @@ function AddSuplement() {
       return res.data;
     },
     onSuccess: () => {
+      document.getElementById("form1").value = "";
+      document.getElementById("form2").value = "";
+      Swal.fire({
+        title: "Suplement ajouter avec succes",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       clientQuery.invalidateQueries(["resturant"]);
     },
   });
@@ -57,12 +74,14 @@ function AddSuplement() {
             className="px-3 w-[60%]  py-3 outline-none mb-2 rounded-xl border-[1px] border-gray-600 "
             type="text"
             required
+            id="form1"
             placeholder="Le nom du suplement"
           />
           <input
             className="px-3 w-[40%]  py-3 outline-none mb-2 rounded-xl border-[1px] border-gray-600 "
             type="number"
             inputMode="numeric"
+            id="form2"
             placeholder="Le prix du prouduit"
           />
           <button
@@ -75,9 +94,11 @@ function AddSuplement() {
             Ajouter
           </button>
         </form>
-        <div className="w-full overflow-y-auto mt-5  py-4 flex  flex-col gap-6 h-56 px-8 ">
+        <div
+          className="w-full overflow-y-auto mt-5  py-4 flex flex-col  gap-6 h-56 px-8 "
+        >
           {currentRes.SupplementId != null &&
-            currentRes.SupplementId.reverse().map((info, index) => {
+            supArr.map((info, index) => {
               return (
                 <SupLine
                   key={index}
@@ -103,9 +124,10 @@ function SupLine({ id, name, price }) {
     },
     onSuccess: () => {
       Swal.fire({
-        title: "Drag me!",
+        title: "Suplement suprimer avec succes",
         icon: "success",
-        draggable: true,
+        showConfirmButton: false,
+        timer: 1500,
       });
     },
   });
