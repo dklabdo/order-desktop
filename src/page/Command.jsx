@@ -10,6 +10,7 @@ import axios from "axios";
 import { TimerIcon } from "lucide-react";
 import Loader from "../component/Loader";
 import { io } from "socket.io-client";
+import { ScreenShareIcon } from "lucide-react";
 const apiLink = import.meta.env.VITE_API_LINK;
 const socketLink = import.meta.env.VITE_API_LINK_REAL_TIME;
 
@@ -39,13 +40,11 @@ function Command() {
     queryFn: async () => {
       console.log(`${apiLink}/restaurant/order/${id}`);
 
-      try {
+      
         const res = await axios.get(`${apiLink}/restaurant/order/${id}`);
         console.log(res.data.data.slice().reverse());
         return res.data.data;
-      } catch (err) {
-        console.error(err);
-      }
+      
     },
 
   });
@@ -104,11 +103,22 @@ function Command() {
               <BadgePlus className="mb-[2px] " size={20} />
               Suplement
             </button>
+            <button
+              onClick={() => {
+                handleOpenPopUp("AddSuplement");
+                setsupId(id);
+              }}
+              className="px-6 mb-2 py-[10px] items-center gap-2 bg-main text-white flex gpa-2 rounded-2xl "
+            >
+              <ScreenShareIcon className="mb-[2px] " size={20} />
+              Cuisine
+            </button>
+            
           </div>
         </div>
 
         {/*-------------------------------------------------*/}
-        <div className="flex gap-4 ">
+        {/* <div className="flex gap-4 ">
           <div className="bg-second rounded-2xl text-white items-center justify-center h-24 w-full flex flex-col gap-2 ">
             <p> 250 </p>
             <h2> Commande </h2>
@@ -122,9 +132,10 @@ function Command() {
             <p> 250 </p>
             <h2> Commande </h2>
           </div>
-        </div>
+        </div> */}
         {/*-------------------------------------------------*/}
         <div className="w-full h-full flex   flex-wrap overflow-y-auto  items-center rounded-2xl bg-gradient-to-b py-4">
+
           {getOrder.isLoading ? (
             <Loader />
           ) : getOrder.isError ? (
@@ -140,6 +151,7 @@ function Command() {
                   product={info.product}
                   total={info.price}
                   id={info._id}
+                  length={getOrder.data.length}
                 />
               );
             })
@@ -152,68 +164,53 @@ function Command() {
 
 export default Command;
 
-function OrderCard({ total, id, product, index, location, time }) {
-  var settings = {
-    dots: true,
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    speed: 2000,
-    autoplaySpeed: 2000,
-    cssEase: "linear",
-  };
+function OrderCard({ total, id, product, index, location, time ,length }) {
+
+  function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+
+  
 
   return (
     <div
       title={id}
-      className="w-1/2 min-w-96 border-8 border-white p-6 flex flex-col gap-2 rounded-2xl bg-gray-100  "
+      className="w-full cursor-pointer hover:bg-[#200e32] hover:text-white justify-between min-w-96 border-8 border-white p-6 flex  gap-2 rounded-3xl bg-gray-50  "
     >
-      <div className="w-full flex justify-center items-center ">
-        <div className="w-24 flex justify-center items-center h-24 rounded-full bg-main text-white ">
-          <p className="text-2xl"> {index + 1} </p>
+      <div className="w-14 flex justify-center items-center ">
+        <div className="w-12 flex justify-center items-center h-12 rounded-full  bg-main text-white ">
+          <p className="text-lg pt-[5px] "> {length - index } </p>
         </div>
       </div>
-      <div className="slider-container ">
-        {product.map((info, index) => {
-          return (
-            <div key={index} className="p-4 flex items-center  flex-col gap-2 ">
-              {info.productId != null ? (
-                <>
-                  <p className=" text-xl text-center font-bold text-main  ">
-                    {" "}
-                    {info.productId.productName}{" "}
-                  </p>
-                  <p className=" text-center  ">
-                    {info.SupplementId.map((info2, index2) => {
-                      return <span key={index2}> {info2.supplementName} </span>;
-                    })}
-                  </p>
-                  <p className="w-fit py-3 px-6 rounded-2xl bg-main text-white ">
-                    {" "}
-                    {info.productId.price}{" "}
-                  </p>
-                </>
-              ) : (
-                <p>Prouduit suprimer</p>
-              )}
-            </div>
-          );
-        })}
-      </div>
 
-      <div className="w-full flex px-2 justify-between items-center ">
+
+      <div className="  justify-center w-[25%] items-center flex px-2 " >
+        <p className="font-bold" >  {product.length} Prouduits </p>
+
+      </div>
+      
+
+      <div className=" w-[45%] flex px-4 justify-between items-center ">
         <p> {location} </p>
-        <p className="flex items-center gap-2">
+        <p className="flex px-3 items-center gap-2">
           {" "}
-          <span>
+          <span className="mb-1" >
             {" "}
             <TimerIcon />{" "}
           </span>{" "}
-          {time}{" "}
+          {formatTimestamp(time)}
         </p>
       </div>
-      <div className="w-full rounded-2xl py-4 bg-main text-white flex justify-center items-center ">
+
+      <div className="w-fit px-5 rounded-2xl py-4 bg-main text-white flex justify-center items-center ">
         <p> {total}DA </p>
       </div>
     </div>

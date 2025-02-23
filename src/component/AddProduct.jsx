@@ -4,15 +4,21 @@ import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../AppProvider";
 import { RemoveFormattingIcon } from "lucide-react";
 import { Trash } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const apiLink = import.meta.env.VITE_API_LINK;
 
 function AddProduct() {
-  const { handleClosePopUp, product, hadnleChangeProduct, currentRes } =
-    useContext(AppContext);
+  const {
+    handleClosePopUp,
+    product,
+    setproduct,
+    hadnleChangeProduct,
+    currentRes,
+  } = useContext(AppContext);
+  const quesries = useQueryClient();
   const [file, setfile] = useState(null);
   const [url, seturl] = useState(null);
   const [selectedSup, setselectedSup] = useState(0);
@@ -70,6 +76,13 @@ function AddProduct() {
       }
     },
     onSuccess: () => {
+      quesries.invalidateQueries(["products"]);
+      setproduct({
+        productName: "",
+        description: "",
+        price: null,
+      });
+      handleClosePopUp();
       Swal.fire({
         title: "Proudit crée avec succes",
         icon: "success",
@@ -107,13 +120,22 @@ function AddProduct() {
     setsupArr([...supArr, currentRes.SupplementId[selectedSup]]);
   }
 
+  function close() {
+    setproduct({
+      productName: "",
+      description: "",
+      price: null,
+    });
+    handleClosePopUp();
+  }
+
   return (
     <div className="w-[70%] flex flex-col items-center justify-center relative bg-white rounded-2xl h-fit py-6 ">
       <div className="w-full pb-6 pt-3 flex justify-between items-center px-10 ">
         <h2 className="text-2xl text-main ">Ajouter un prouduit </h2>
         <X
           size={34}
-          onClick={() => handleClosePopUp()}
+          onClick={() => close()}
           className="text-main cursor-pointer "
         />
       </div>

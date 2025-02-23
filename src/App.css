@@ -67,13 +67,8 @@ input:focus{
   @apply px-2 py-3 outline-none mb-2 rounded-xl border-[1px] border-gray-600;
 }
 
-.input:focus {
-  border-color: #ff5152;
-}
 
-.input:focus::placeholder {
-  color: #ff5152;
-}
+
 
 .logInBox {
   animation-name: box;

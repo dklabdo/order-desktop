@@ -47,26 +47,16 @@ function Resturants() {
       <div className="w-full h-full flex flex-col  p-5 ">
         <Select />
 
-        <div className="w-full pt-2  flex items-center justify-between ">
-          <div className="flex  -space-x-[33px] ml-3 group w-[35%] items-center  ">
-            <Search
-              size={20}
-              className="text-gray-600 group-focus:text-[#FF5152] mb-[8px] "
-            />
-            <input
-              type="text"
-              className="w-full group-focus:text-[#FF5152] focus:border-[#FF5152] pl-10  px-2 py-3 outline-none mb-2 rounded-xl border-[1px] border-gray-600  "
-              placeholder="type a resturant name"
-            />
-          </div>
-          <div className="flex gap-1">
+        <div className="w-full   left-0 px-12 absolute bottom-0 py-6 justify-end flex items-center  ">
+          
+          
             <button
               onClick={() => handleOpenPopUp("AddResturant")}
-              className="flex cursor-pointer py-[12px] mr-2 text-md font-light gap-2 items-center px-5 bg-main text-white rounded-2xl "
+              className="flex w-18 z-30 justify-center cursor-pointer py-[12px]  text-md font-light  items-center  bg-main text-white rounded-2xl "
             >
               <Plus />
             </button>
-          </div>
+          
         </div>
         <div className="py-6 px-4 pb-28 overflow-y-auto flex flex-col gap-3">
           {resturantQuery.isLoading && <Loader />}
@@ -145,12 +135,12 @@ function Resturant({ id, img, total, name, email, banned }) {
         <p className="w-[20%] "> {email} </p>
         <p className="w-[20%] "> {total}DA </p>
       </div>
-      {/* <button
+      <button
         onClick={() => handleDelete()}
         className="bg-main cursor-pointer z-20 py-2 px-4 text-white rounded-2xl"
       >
         Suprimer
-      </button> */}
+      </button>
 
       {/* <ShieldCKheck /> */}
     </div>

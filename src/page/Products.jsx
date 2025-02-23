@@ -78,7 +78,7 @@ function Products() {
 
       <div className="w-full h-full  flex flex-col  p-5 ">
         <Select />
-        <div className="slider-container ">
+        <div className="slider-container  ">
           <Slider {...settings}>
             {resturantQuery.isLoading ? (
               <div className="flex w-full justify-center  py-6 gap-3">
@@ -113,27 +113,18 @@ function Products() {
           </Slider>
         </div>
 
-        <div className="w-full pt-2  flex items-center justify-between ">
-          <div className="flex  -space-x-[33px] ml-3 group w-[35%] items-center  ">
-            <Search
-              size={20}
-              className="text-gray-600 mb-[8px] group-focus:text-[#FF5152]  "
-            />
-            <input
-              type="text"
-              className="w-full group-focus:text-[#FF5152] focus:border-[#FF5152] pl-10  px-2 py-3 outline-none mb-2 rounded-xl border-[1px] border-gray-600  "
-              placeholder="type a resturant name"
-            />
-          </div>
+        <div className="w-full   left-0 px-12 absolute bottom-0 py-6 justify-end flex items-center  ">
+          
+          
           <button
             onClick={() => handleOpenPopUp("AddProduct")}
-            className="flex cursor-pointer py-[12px] mr-2 text-md font-light gap-2 items-center px-5 bg-main text-white rounded-2xl "
+            className="flex w-18 z-30 justify-center cursor-pointer py-[12px]  text-md font-light  items-center  bg-main text-white rounded-2xl "
           >
-            {" "}
-            <Plus />{" "}
+            <Plus />
           </button>
-        </div>
-        <div className="w-full  py-8 pb-20 overflow-y-auto flex flex-wrap gap-4 h-full">
+        
+      </div>
+        <div className="w-full  pt-2 pb-20 overflow-y-auto flex flex-wrap gap-4 h-full">
           {resturantQuery.isLoading ? (
             <Loader />
           ) : resturantQuery.isError ? (
@@ -159,23 +150,22 @@ function Products() {
 }
 
 function ProductCard({ name, img, desc, price, id }) {
-  const [url, seturl] = useState(null);
-  const queries = useQueryClient();
+  console.log(name);
   console.log(img);
+  const queries = useQueryClient();
 
-  useEffect(() => {
-    async function getImg() {
-      const res = await axios
-        .get(`${uploadLink}/${img}`, {
-          responseType: "blob",
-        })
-        .then((res) => {
-          const imageObjectUrl = URL.createObjectURL(res.data);
-          seturl(imageObjectUrl);
-        });
-    }
-    getImg();
-  }, [img]);
+  const getImg = useQuery({
+    queryKey: ["getImg", img],
+    queryFn: async () => {
+      const res = await axios.get(`${uploadLink}/${img}`, {
+        responseType: "blob",
+      });
+
+      const imageObjectUrl = URL.createObjectURL(res.data);
+      console.log(imageObjectUrl);
+      return imageObjectUrl;
+    },
+  });
 
   const deleteProduct = useMutation({
     mutationKey: ["deletePr"],
@@ -196,8 +186,6 @@ function ProductCard({ name, img, desc, price, id }) {
   });
 
   function handledelete() {
-    
-
     Swal.fire({
       title: "Are you sure?",
       text: "You want to delete this product",
@@ -208,9 +196,7 @@ function ProductCard({ name, img, desc, price, id }) {
       confirmButtonText: "Yes",
     }).then((result) => {
       if (result.isConfirmed) {
-        
         deleteProduct.mutate();
-       
       }
     });
   }
@@ -218,7 +204,9 @@ function ProductCard({ name, img, desc, price, id }) {
   return (
     <div className="max-w-72 w-72 scale-90  overflow-y-hidden rounded-2xl  relative flex flex-col items-center   h-[470px]   ">
       <div className=" w-[70%]  top-0 h-42 flex justify-center items-center absolute border-none z-10 bg-white rounded-2xl   ">
-        {url != null && <img className="w-[80%] " src={url} />}
+        {!getImg.isError && !getImg.isLoading && (
+          <img className="w-[80%] " src={getImg.data} />
+        )}
       </div>
       <div className="h-[80%] gap-3 relative  text-white items-center pt-[44%] flex flex-col mt-[20%]  w-full bg-second rounded-2xl ">
         <h2 className="text-xl pb-2  "> {name} </h2>

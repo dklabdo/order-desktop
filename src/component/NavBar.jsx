@@ -2,8 +2,8 @@ import React from "react";
 import img from "../assets/logo.png";
 import { LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Search } from "lucide-react";
 function NavBar() {
-
   return (
     <div className="w-full py-2  flex justify-between px-8 ">
       <div className="w-[50%] flex gap-4 items-center   ">
@@ -18,12 +18,22 @@ function NavBar() {
         </div>
       </div>
       <div className="py-4 ">
-        <button className="text-main  cursor-pointer ">
+        <div className="text-main flex flex-row-reverse items-center  cursor-pointer ">
           <button className="flex bg-main text-white py-3 px-4 rounded-2xl items-center gap-2">
             <LogOut />
-            Deconecter
           </button>
-        </button>
+          <div className="flex mt-[11px] min-w-32   -space-x-[33px] ml-3 group  items-center  ">
+            <Search
+              size={20}
+              className="text-gray-600 mb-[8px]   "
+            />
+            <input
+              type="text"
+              className="w-full placeholder:text-gray-800 focus:border-[#FF5152] pl-10  px-2 py-3 outline-none mb-2 rounded-xl border-[1px] border-gray-600  "
+              placeholder="Search ..."
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

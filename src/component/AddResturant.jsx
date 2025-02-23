@@ -24,6 +24,7 @@ function AddResturant() {
   const [show, setshow] = useState(false);
   const clientQueries = useQueryClient();
 
+  
   function HandleDrop(e) {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
@@ -48,10 +49,14 @@ function AddResturant() {
     }
   }, [file]);
 
-  const AddProductMutation = useMutation({
-    mutationKey: ["addProduct"],
+  const AddResturantMutation = useMutation({
+    mutationKey: ["AddResturant"],
     mutationFn: async () => {
-      const res = await axios.post(`${apiLink}/restaurant`, resturent);
+      const res = await axios.post(`${apiLink}/restaurant`, {...resturent , image : file}, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return res.data;
     },
     onSuccess: () => {
@@ -68,7 +73,7 @@ function AddResturant() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    AddProductMutation.mutate();
+    AddResturantMutation.mutate();
   }
 
   return (
@@ -163,7 +168,7 @@ function AddResturant() {
             />
             <input
               className="pl-10  py-3 outline-none mb-2 rounded-xl border-[1px] border-gray-600 w-full "
-              type="password"
+              type="number"
               name="phoneNumber"
               required
               placeholder="0X XX XX XX XX"
@@ -189,9 +194,9 @@ function AddResturant() {
         <div className="flex  w-full  py-6 items-center justify-between">
           <button
             type="submit"
-            disabled={AddProductMutation.isPending}
+            disabled={AddResturantMutation.isPending}
             className={`py-[12px] ${
-              AddProductMutation.isPending ? "bg-gray-400" : "bg-main"
+              AddResturantMutation.isPending ? "bg-gray-400" : "bg-main"
             } w-full rounded-2xl cursor-pointer h-fit  text-white px-8`}
           >
             Add

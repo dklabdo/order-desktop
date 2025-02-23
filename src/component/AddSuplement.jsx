@@ -118,9 +118,13 @@ function SupLine({ id, name, price }) {
   const removeSuplementMutation = useMutation({
     mutationKey: ["removeSuplement"],
     mutationFn: async () => {
-      const res = await axios.delete(`${apiLink}/restaurant/supplement/${id}`);
+      try{
+        const res = await axios.delete(`${apiLink}/supplement/${id}`);
       console.log(res.data);
       return res.data;
+      }catch(err){
+        console.error(err);
+      }
     },
     onSuccess: () => {
       Swal.fire({
@@ -136,7 +140,7 @@ function SupLine({ id, name, price }) {
     <div className="w-full hover:bg-main  flex justify-between items-center px-5">
       <p className="w-[60%] "> {name} </p>
       <p className=" w-[30%] "> {price} </p>
-      <button className="bg-main text-white rounded-full p-2 flex justify-center items-center w-[35px] h-[35px]   ">
+      <button onClick={() => removeSuplementMutation.mutate()} className="bg-main text-white rounded-full p-2 flex justify-center items-center w-[35px] h-[35px]   ">
         {" "}
         <Trash />{" "}
       </button>
